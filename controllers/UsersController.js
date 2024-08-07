@@ -24,7 +24,8 @@ class UsersController {
 
     // check if email exists
     try {
-      if (await dbClient.users.findOne({ email })) {
+      const alreadyExist = await dbClient.users.findOne({ email });
+      if (alreadyExist) {
         return res.status(400).send({ error: 'Already exist' });
       }
 
@@ -32,12 +33,12 @@ class UsersController {
         email,
         password: sha1(password),
       });
-      const user = { email, id: newUser._id };
-      await userQueue.add({ userId: newUser._id.toString() });
+      const user = { email, id: newUser.insertedId };
+      await userQueue.add({ userId: newUser.insertedId });
       return res.status(201).send(user);
     } catch (error) {
       await userQueue.add({});
-      return res.status(500).send({ error: error.message });
+      return res.status(500).send({ error: 'Server Error' });
     }
   }
 

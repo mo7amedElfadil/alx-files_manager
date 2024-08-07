@@ -1,6 +1,4 @@
-#!/usr/bin/node
 import express from 'express';
-
 import AppController from '../controllers/AppController';
 import AuthController from '../controllers/AuthController';
 import UsersController from '../controllers/UsersController';
@@ -11,7 +9,6 @@ function controllerRouting(app) {
   app.use('/', router);
 
   // App Controller
-
   router.get('/status', (req, res) => {
     AppController.getStatus(req, res);
   });
@@ -39,7 +36,6 @@ function controllerRouting(app) {
   });
 
   // FilesController
-
   router.post('/files', (req, res) => {
     FilesController.postUpload(req, res);
   });
@@ -51,18 +47,6 @@ function controllerRouting(app) {
   router.get('/files', (req, res) => {
     FilesController.getIndex(req, res);
   });
-
-  // router.put('/files/:id/publish', (req, res) => {
-  //   FilesController.putPublish(req, res);
-  // });
-
-  // router.put('/files/:id/unpublish', (req, res) => {
-  //   FilesController.putUnpublish(req, res);
-  // });
-
-  // router.get('/files/:id/data', (req, res) => {
-  //   FilesController.getFile(req, res);
-  // });
 }
 
 export default controllerRouting;

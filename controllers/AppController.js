@@ -1,16 +1,14 @@
-#!/usr/bin/node
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
+
 /**
  * @class AppController
  */
 class AppController {
-/**
- * @static getStatus - should return if Redis is alive and if the DB is alive too
- * by using the 2 isAlive utils created previously:
- * { "redis": true, "db": true } with a status code 200
- */
-
+  /**
+   * @static getStatus - should return if Redis is alive and if the DB is alive too
+   * by using the 2 isAlive utils created previously:
+   */
   static getStatus(_, res) {
     const status = {
       redis: redisClient.isAlive(),

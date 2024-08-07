@@ -1,7 +1,6 @@
-#!/usr/bin/node
+import { ObjectId } from 'mongodb';
 import redisClient from './redis';
 import dbClient from './db';
-import { ObjectId } from 'mongodb';
 
 /**
  * @module with user utilities

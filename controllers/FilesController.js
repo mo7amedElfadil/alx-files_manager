@@ -1,4 +1,3 @@
-#!/usr/bin/node
 import { ObjectId } from 'mongodb';
 import Queue from 'bull';
 import userUtils from '../utils/user';

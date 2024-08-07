@@ -1,4 +1,3 @@
-#!/usr/bin/node
 import { ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import { promises as fsPromises } from 'fs';

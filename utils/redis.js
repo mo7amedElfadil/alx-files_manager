@@ -1,5 +1,3 @@
-#!/usr/bin/node
-
 /**
  * @class RedisClient - Redis client
  */

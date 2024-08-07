@@ -19,7 +19,7 @@ function controllerRouting(app) {
 
   // UsersController
   router.post('/users', (req, res) => {
-    UsersController.postUser(req, res);
+    UsersController.postNew(req, res);
   });
 
   router.get('/users/me', (req, res) => {

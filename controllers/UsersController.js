@@ -1,7 +1,10 @@
 import sha1 from 'sha1';
 import { ObjectId } from 'mongodb';
+import Queue from 'bull';
 import dbClient from '../utils/db';
 import userUtils from '../utils/user';
+
+const userQueue = new Queue('userQueue');
 
 /**
  * @class UsersController
@@ -14,7 +17,7 @@ class UsersController {
    * @returns {Promise<void>}
    * @memberof UsersController
    */
-  static async postUser(req, res) {
+  static async postNew(req, res) {
     const { email, password } = req.body;
     if (!email) return res.status(400).send({ error: 'Missing email' });
     if (!password) return res.status(400).send({ error: 'Missing password' });
@@ -29,8 +32,11 @@ class UsersController {
         email,
         password: sha1(password),
       });
-      return res.status(201).send({ email, id: newUser._id });
+      const user = { email, id: newUser._id };
+      await userQueue.add({ userId: newUser._id.toString() });
+      return res.status(201).send(user);
     } catch (error) {
+      await userQueue.add({});
       return res.status(500).send({ error: error.message });
     }
   }

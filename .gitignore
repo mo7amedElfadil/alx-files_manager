@@ -1,6 +1,3 @@
-*
-!/*.js
-!/.gitignore
-!/README.md
-!/LICENSE
-*main.js
+node_modules
+package-lock.json
+.pre-commit-config.yaml

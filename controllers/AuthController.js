@@ -25,7 +25,6 @@ class AuthController {
       .split(':');
 
     if (!email || !password) { return res.status(401).send({ error: 'Unauthorized' }); }
-
     const sha1Password = sha1(password);
 
     const user = await userUtils.getUser({

@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import Queue from 'bull';
+import mime from 'mime-types';
 import userUtils from '../utils/user';
 import fileUtils from '../utils/file';
 import validate from '../utils/validation';
@@ -109,7 +110,7 @@ class FilesController {
   }
 
   /**
-   * static putPublish - publishes a file
+   * static getIndex - retrieves a list of files based on the parent ID
    * @param {Request} request - request object
    * @param {Response} response - response object
    * @returns {Promise<void>} - returns a promise
@@ -158,6 +159,77 @@ class FilesController {
     });
 
     return response.status(200).send(fileList);
+  }
+
+  /**
+   * static putPublish - set isPublic to true on the file document based on the ID
+   * @param {Request} request - request object
+   * @param {Response} response - response object
+   * @returns {Promise<void>} - returns a promise
+   */
+  static async putPublish(request, response) {
+    const { error, code, updatedFile } = await fileUtils.publishUnpublish(
+      request,
+      true,
+    );
+
+    if (error) return response.status(code).send({ error });
+
+    return response.status(code).send(updatedFile);
+  }
+
+  /**
+   * static putUnpublish - set isPublic to false on the file document based on the ID
+   * @param {Request} request - request object
+   * @param {Response} response - response object
+   * @returns {Promise<void>} - returns a promise
+   */
+  static async putUnpublish(request, response) {
+    const { error, code, updatedFile } = await fileUtils.publishUnpublish(
+      request,
+      false,
+    );
+
+    if (error) return response.status(code).send({ error });
+
+    return response.status(code).send(updatedFile);
+  }
+
+  /**
+   * static getFile - return the content of the file document based on the ID
+   * @param {Request} request - request object
+   * @param {Response} response - response object
+   * @returns {Promise<void>} - returns a promise
+   */
+  static async getFile(request, response) {
+    const { userId } = await userUtils.getUserIdAndKey(request);
+    const { id: fileId } = request.params;
+    const size = request.query.size || 0;
+
+    // Mongo Condition for Id
+    if (!validate.isId(fileId)) { return response.status(404).send({ error: 'Not found' }); }
+
+    const file = await fileUtils.getFile({
+      _id: ObjectId(fileId),
+    });
+
+    if (!file || !fileUtils.isOwnerAndPublic(file, userId)) { return response.status(404).send({ error: 'Not found' }); }
+
+    if (file.type === 'folder') {
+      return response
+        .status(400)
+        .send({ error: "A folder doesn't have content" });
+    }
+
+    const { error, code, data } = await fileUtils.getFileData(file, size);
+
+    if (error) return response.status(code).send({ error });
+
+    const mimeType = mime.contentType(file.name);
+
+    response.setHeader('Content-Type', mimeType);
+
+    return response.status(200).send(data);
   }
 }
 

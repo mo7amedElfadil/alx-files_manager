@@ -35,20 +35,6 @@ class RedisClient {
   }
 
   /**
-   * @method handleAsync - Handle async functions
-   * @param {Function} fn - Async function
-   * @returns {Promise} - Promise object
-   */
-  static async handleAsync(fn) {
-    try {
-      return await fn();
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-
-  /**
    * @method isAlive - Check if Redis client is connected to the server
    * @returns {Boolean} - True if connected, false otherwise
    */
@@ -62,7 +48,6 @@ class RedisClient {
    * @returns {String} - Value of the key
    */
   async get(key) {
-    // return RedisClient.handleAsync(async () => this.getAsync(key));
     return this.getAsync(key);
   }
 
@@ -74,7 +59,6 @@ class RedisClient {
    * @returns {String} - Value of the key
    */
   async set(key, value, duration) {
-    // return RedisClient.handleAsync(async () => this.setAsync(key, duration, value));
     return this.setAsync(key, duration, value);
   }
 
@@ -84,7 +68,6 @@ class RedisClient {
    * @returns {Promise} - Promise object of the del method
    */
   async del(key) {
-    // return RedisClient.handleAsync(async () => this.delAsync(key));
     return this.delAsync(key);
   }
 }
